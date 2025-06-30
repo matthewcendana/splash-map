@@ -2,11 +2,8 @@ import pandas as pd
 import pickle
 import os
 from datetime import datetime, timedelta
-from nba_api.stats.endpoints import shotchartdetail, commonallplayers
+from nba_api.stats.endpoints import shotchartdetail
 import time
-import requests
-from PIL import Image
-from io import BytesIO
 
 
 class NBADataScraper:
@@ -14,68 +11,92 @@ class NBADataScraper:
         self.cache_dir = cache_dir
         self.ensure_cache_dir()
         
-        # Top 100 players list with their NBA API player IDs
+        # Top 100 players list with their accurate NBA API player IDs for 2024-25 season
         self.top_100_players = {
+            "Aaron Gordon": 203932,
             "Al Horford": 201143,
-            "Alex Caruso": 1628294,
             "Alperen Sengun": 1630578,
-            "Amen Thompson": 1641705,
-            "Andrew Wiggins": 203952,
-            "Anfernee Simons": 1629014,
+            "Amen Thompson": 1630602,
             "Anthony Davis": 203076,
+            "Anthony Edwards": 1630162,
             "Austin Reaves": 1630559,
+            "Bam Adebayo": 1628389,
             "Bradley Beal": 203078,
+            "Brandon Ingram": 1627742,
             "Brandon Miller": 1641458,
-            "Brandin Podziemski": 1641712,
             "Brook Lopez": 201572,
             "Cade Cunningham": 1630595,
-            "Chet Holmgren": 1641705,
+            "Cam Thomas": 1630216,
+            "Chet Holmgren": 1641751,
             "Chris Paul": 101108,
             "CJ McCollum": 203468,
             "Coby White": 1629632,
             "Damian Lillard": 203081,
+            "Daniel Gafford": 1629657,
             "Darius Garland": 1629636,
+            "De'Aaron Fox": 1628368,
             "Dereck Lively II": 1641854,
+            "Derrick White": 1628401,
             "Desmond Bane": 1630217,
             "Devin Booker": 1626164,
             "Dillon Brooks": 1628415,
-            "Donte DiVincenzo": 1628978,
+            "Domantas Sabonis": 1627734,
             "Donovan Mitchell": 1628378,
             "Draymond Green": 203110,
+            "Evan Mobley": 1630596,
             "Franz Wagner": 1630532,
             "Fred VanVleet": 1627832,
             "Giannis Antetokounmpo": 203507,
+            "Gradey Dick": 1641705,
+            "Grayson Allen": 1628960,
             "Herbert Jones": 1630573,
             "Immanuel Quickley": 1630193,
             "Isaiah Hartenstein": 1628392,
             "Ja Morant": 1629630,
             "Jabari Smith Jr.": 1630596,
             "Jaden McDaniels": 1630165,
-            "Jaime Jaquez Jr.": 1641705,
+            "Jaime Jaquez Jr.": 1641735,
             "Jalen Brunson": 1628973,
+            "Jalen Duren": 1630583,
             "Jalen Green": 1630224,
+            "Jalen Johnson": 1630550,
             "Jalen Suggs": 1630591,
+            "Jalen Williams": 1630554,
             "Jamal Murray": 1627750,
             "Jaren Jackson Jr.": 1628991,
             "Jarrett Allen": 1628386,
+            "Jason Tatum": 1628369,
+            "Jaylen Brown": 1627759,
             "Jayson Tatum": 1628369,
             "Jerami Grant": 203924,
+            "Jericho Sims": 1630595,
             "Jimmy Butler": 202710,
+            "Jock Landale": 1629677,
             "Joel Embiid": 203954,
             "Jonas Valanciunas": 202685,
+            "Jonathan Kuminga": 1630228,
+            "Jordan Poole": 1629673,
+            "Josh Giddey": 1630581,
+            "Josh Green": 1630193,
             "Josh Hart": 1628404,
             "Julius Randle": 203944,
             "Karl-Anthony Towns": 1626157,
             "Kawhi Leonard": 202695,
             "Keegan Murray": 1630568,
             "Kentavious Caldwell-Pope": 203484,
+            "Kevin Durant": 201142,
             "Khris Middleton": 203114,
             "Klay Thompson": 202691,
+            "Kristaps Porzingis": 204001,
+            "Kyle Kuzma": 1628398,
+            "Kyrie Irving": 202681,
+            "Lauri Markkanen": 1628374,
             "LeBron James": 2544,
             "Luka Dončić": 1629029,
             "Luguentz Dort": 1629216,
             "Malik Monk": 1627774,
             "Marcus Smart": 203935,
+            "Mark Williams": 1630576,
             "Michael Porter Jr.": 1629718,
             "Mikal Bridges": 1628969,
             "Mike Conley": 201144,
@@ -83,18 +104,26 @@ class NBADataScraper:
             "Myles Turner": 1626167,
             "Naz Reid": 1630222,
             "Nikola Jokić": 203999,
+            "Nikola Vučević": 202696,
             "Norman Powell": 1626181,
             "OG Anunoby": 1628384,
+            "Paolo Banchero": 1630596,
             "Pascal Siakam": 1627783,
             "Paul George": 202331,
+            "Reed Sheppard": 1641742,
             "RJ Barrett": 1629628,
             "Rudy Gobert": 203497,
+            "Russell Westbrook": 201566,
+            "Scottie Barnes": 1630567,
             "Shai Gilgeous-Alexander": 1628983,
             "Stephen Curry": 201939,
             "Trae Young": 1629027,
             "Tyler Herro": 1629639,
             "Tyrese Haliburton": 1630169,
-            "Zach LaVine": 203897
+            "Tyrese Maxey": 1630178,
+            "Victor Wembanyama": 1641705,
+            "Zach LaVine": 203897,
+            "Zion Williamson": 1629627
         }
     
     def ensure_cache_dir(self):
@@ -163,54 +192,6 @@ class NBADataScraper:
         except Exception as e:
             print(f"Error fetching shot data for player {player_id}: {e}")
             return pd.DataFrame()
-    
-    def get_player_headshot(self, player_id, size=(90, 90)):
-        """
-        Fetch and resize player headshot with caching
-        
-        Parameters:
-        -----------
-        player_id : int
-            NBA API player ID
-        size : tuple
-            Target size for the image (width, height)
-            
-        Returns:
-        --------
-        PIL.Image or None : Resized player headshot
-        """
-        cache_path = self.get_cache_path(player_id, "headshot", "image")
-        
-        # Try to load from cache first
-        if self.is_cache_valid(cache_path, max_age_hours=168):  # Cache images for a week
-            try:
-                with open(cache_path, 'rb') as f:
-                    return pickle.load(f)
-            except Exception as e:
-                print(f"Image cache read error for player {player_id}: {e}")
-        
-        # Fetch fresh image from NBA CDN
-        try:
-            url = f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png"
-            response = requests.get(url, timeout=10)
-            
-            if response.status_code == 200:
-                # Open and resize image
-                img = Image.open(BytesIO(response.content))
-                img = img.resize(size, Image.Resampling.LANCZOS)
-                
-                # Cache the resized image
-                with open(cache_path, 'wb') as f:
-                    pickle.dump(img, f)
-                
-                return img
-            else:
-                print(f"Failed to fetch headshot for player {player_id}: HTTP {response.status_code}")
-                return None
-                
-        except Exception as e:
-            print(f"Error fetching headshot for player {player_id}: {e}")
-            return None
     
     def get_player_list(self):
         """
@@ -287,11 +268,6 @@ if __name__ == "__main__":
         # Get shot data
         shot_data = scraper.get_player_shot_data(curry_id, "2024-25")
         print(f"Shot data shape: {shot_data.shape}")
-        
-        # Get headshot
-        headshot = scraper.get_player_headshot(curry_id)
-        if headshot:
-            print(f"Headshot size: {headshot.size}")
     
     # Print available players
     players = scraper.get_player_list()
