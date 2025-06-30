@@ -356,7 +356,7 @@ def main():
     st.markdown("""
     <div class="header-section">
         <h1 class="splash-header">SPLASH MAP</h1>
-        <p class="splash-subheading">A dashboard visualizing shot data from the top 100 NBA players during the 2024–2025 season</p>
+        <p class="splash-subheading">A dashboard visualizing shot data from the top 100 NBA players during the 2024–2025 regular season</p>
     </div>
     """, unsafe_allow_html=True)
     

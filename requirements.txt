@@ -1,0 +1,9 @@
+streamlit
+seaborn
+matplotlib
+pandas
+numpy
+scipy
+nba_api>=1.10.0
+requests
+Pillow
