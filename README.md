@@ -1,7 +1,5 @@
 # Splash Map
 
-**Status:** Work in Progress
-
 **Live Demo:** [https://splash-map.streamlit.app/](https://splash-map.streamlit.app/)
 
 Splash Map is an interactive Streamlit dashboard that generates shot-selection heatmaps for each of the NBA’s Top 100 players from the 2024–25 regular season.
