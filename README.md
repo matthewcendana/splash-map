@@ -30,8 +30,6 @@ Contains the logic for generating the shot-selection heatmap. It utilizes kernel
 
 ## Screenshots
 
-*Add screenshots below by replacing the placeholders.*
-
 ![Dashboard View](https://github.com/matthewcendana/splash-map/blob/76697af231826321833ffe61ac0e7afac31cd1c6/dashboard.png)  
 *Dashboard showing player selection and overall layout.*
 
