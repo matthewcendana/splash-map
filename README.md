@@ -39,9 +39,11 @@ Contains the logic for generating the shot-selection heatmap. It utilizes kernel
 ![Show Location Map Example](https://github.com/matthewcendana/splash-map/blob/76697af231826321833ffe61ac0e7afac31cd1c6/shot_location_map.png) 
 *Example of a player’s shot location map.*
 
-## Installation
+## Resolution & Smoothing for Player-Specific Heatmaps
+Fine‑tuning resolution and smoothing helps reflect each player's unique shot map more clearly. For a long‑range player like Stephen Curry, use finer resolution and lighter smoothing so you preserve his distinct 3‑point hotspots (corners, wings, top of key) without merging them. For a post‑up interior player like Anthony Davis, a coarser grid with stronger smoothing highlights the rim cluster while suppressing sparse mid‑range noise. Calibrating these parameters per player ensures the heatmap accurately captures their true shot patterns and aids intuitive interpretation.
 
-Clone the repo and install dependencies:
+## Installation
+If you want to edit this project yourself, clone the repo and install dependencies:
 
 ```bash
 git clone https://github.com/matthewcendana/splash-map.git
