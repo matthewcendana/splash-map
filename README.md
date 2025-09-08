@@ -54,7 +54,6 @@ If you want to edit this project yourself, clone the repo and install dependenci
 ```bash
 git clone https://github.com/matthewcendana/splash-map.git
 cd splash-map
-python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
 streamlit run dashboard.py
